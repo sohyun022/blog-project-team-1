@@ -9,8 +9,9 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Override
-    public boolean isDuplicated(String id){
-
-        return userRepository.findByUserLoginId(id) != null;
+    public void validateDuplicateId(String userLoginId){
+        if (userRepository.existsByUserLoginId(userLoginId)) {
+            throw new CustomException(CustomErrorInfo.ID_DUPLICATION);
+        }
     }
 }

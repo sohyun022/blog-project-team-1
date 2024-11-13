@@ -26,9 +26,7 @@ public class UserController implements UserControllerDocs {
 
     @PostMapping("/validate") // docs의 역할은 뭔가??
     public ResponseEntity<?> checkDuplicateId(@RequestParam String id) {
-        if(userService.isDuplicated(id)){
-            throw new CustomException(CustomErrorInfo.ID_DUPLICATION);
-        }
+        userService.validateDuplicateId(id);
         return ResponseEntity.ok("사용 가능한 ID");
     }
 
