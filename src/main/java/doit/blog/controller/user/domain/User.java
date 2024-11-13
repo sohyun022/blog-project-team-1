@@ -1,15 +1,17 @@
 package doit.blog.controller.user.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity // 해당 어노테이션이 필요한 이유?
+@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class User { //User 클래스로 이름 짓는게 안좋은 이유
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
