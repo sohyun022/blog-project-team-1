@@ -31,8 +31,9 @@ public class UserController implements UserControllerDocs {
     }
 
     @PostMapping("/signup")
-    public void signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
-
+    public ResponseEntity<?> signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
+        userService.signUp(userSignUpRequest);
+        return ResponseEntity.ok("회원가입 완료");
     }
 
     @PostMapping("/login")
