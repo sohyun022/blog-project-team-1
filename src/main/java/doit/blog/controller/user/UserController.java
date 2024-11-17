@@ -4,8 +4,7 @@ import doit.blog.controller.user.dto.UserInfoResponse;
 import doit.blog.controller.user.dto.UserLoginRequest;
 import doit.blog.controller.user.dto.UserIdResponse;
 import doit.blog.controller.user.dto.UserSignUpRequest;
-import doit.blog.exception.CustomErrorInfo;
-import doit.blog.exception.CustomException;
+
 import doit.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
