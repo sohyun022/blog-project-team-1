@@ -4,8 +4,8 @@ import doit.blog.controller.user.dto.UserInfoResponse;
 import doit.blog.controller.user.dto.UserLoginRequest;
 import doit.blog.controller.user.dto.UserIdResponse;
 import doit.blog.controller.user.dto.UserSignUpRequest;
-
 import doit.blog.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController implements UserControllerDocs {
 
     private final UserService userService;
+    private final HttpSession session;
 
     @PostMapping("/validate") // docs의 역할은 뭔가??
     public ResponseEntity<?> checkDuplicateId(@RequestParam String id) {
         userService.validateDuplicateId(id);
-        return ResponseEntity.ok("사용 가능한 ID");
     }
 
     @PostMapping("/signup")
@@ -40,8 +40,9 @@ public class UserController implements UserControllerDocs {
         return null;
     }
 
-    @GetMapping("/{userId}")
-    public UserInfoResponse getUserInfo(@PathVariable Long userId) {
-        return null;
+    @GetMapping("/info")
+    public UserInfoResponse getUserInfo() {
+        Long userId = (Long)session.getAttribute("user");
+        return userService.getUserInfo(userId);
     }
 }
