@@ -1,12 +1,13 @@
 package doit.blog.controller.user.domain;
 
+import doit.blog.controller.user.dto.UserSignUpRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Entity // 해당 어노테이션이 필요한 이유?
+@Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
@@ -18,7 +19,7 @@ public class User {
 
     private String userLoginId;
 
-    @NotNull // nullable 이랑 뭐가 다르지
+    @NotNull
     private String userPassword;
 
     @NotNull
@@ -28,5 +29,23 @@ public class User {
     private String userNickname;
 
     private String userPhoneNumber;
+
+    @Builder
+    private User(String userLoginId, String userPassword, String userName, String userNickname, String userPhoneNumber) {
+        this.userLoginId = userLoginId;
+        this.userPassword = userPassword;
+        this.userName = userName;
+        this.userNickname = userNickname;
+        this.userPhoneNumber = userPhoneNumber;
+    }
+
+    public static User create(UserSignUpRequest request,PasswordEncoder passwordEncoder) {
+        return User.builder().userLoginId(request.userLoginId())
+                .userPassword(passwordEncoder.encode(request.userPassword()))
+                .userName(request.userPassword())
+                .userNickname(request.userNickname())
+                .userPhoneNumber(request.userPhoneNumber())
+                .build();
+    }
 
 }
