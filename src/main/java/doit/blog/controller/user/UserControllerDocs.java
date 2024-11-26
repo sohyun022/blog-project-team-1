@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 
 @Tag(name = "User", description = "유저 관련 API")
 interface UserControllerDocs {
@@ -16,7 +15,7 @@ interface UserControllerDocs {
     @Operation(summary = "아이디 중복 확인", description = "회원가입 시 아이디 중복을 확인한다.")
     @ApiResponse(responseCode = "200", description = "아이디 중복 확인 성공")
     @ApiResponse(responseCode = "400", description = "아이디 중복 확인 실패")
-    ResponseEntity<?> checkDuplicateId(
+    void checkDuplicateId(
             @Schema(description = "중복 확인할 아이디", example = "testId")
             String id
     );
@@ -24,7 +23,7 @@ interface UserControllerDocs {
     @Operation(summary = "회원가입", description = "회원가입을 한다.")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
     @ApiResponse(responseCode = "400", description = "회원가입 실패")
-    ResponseEntity<?> signUp(
+    UserIdResponse signUp(
             @Schema(description = "회원가입 정보", implementation = UserSignUpRequest.class)
             UserSignUpRequest userSignUpRequest
     );
@@ -41,7 +40,5 @@ interface UserControllerDocs {
     @ApiResponse(responseCode = "200", description = "유저 정보 조회 성공", useReturnTypeSchema = true)
     @ApiResponse(responseCode = "400", description = "유저 정보 조회 실패")
     UserInfoResponse getUserInfo(
-            @Schema(description = "유저 식별 ID", example = "1")
-            Long userId
     );
 }
