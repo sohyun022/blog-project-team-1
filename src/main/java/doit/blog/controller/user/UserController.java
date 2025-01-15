@@ -54,7 +54,7 @@ public class UserController implements UserControllerDocs {
     }
 
     @PutMapping("/info")
-    public UserIdResponse updateUserInfo(UserInfoUpdateRequest userInfoUpdateRequest) {
+    public UserIdResponse updateUserInfo(@RequestBody UserInfoUpdateRequest userInfoUpdateRequest) {
         Long userId = (Long)session.getAttribute("user");
         return userService.updateUserInfo(userId, userInfoUpdateRequest);
     }
