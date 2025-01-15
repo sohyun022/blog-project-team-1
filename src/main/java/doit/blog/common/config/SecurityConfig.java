@@ -34,7 +34,8 @@ public class SecurityConfig {
                         session.sessionFixation(SessionFixationConfigurer::migrateSession)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers( "/api/**", "/h2-console/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                        .requestMatchers( "/api/**", "/h2-console/**","/swagger-ui/**","/v3/api-docs/**")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
         ;

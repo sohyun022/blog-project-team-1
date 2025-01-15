@@ -1,10 +1,7 @@
 package doit.blog.service;
 
 import doit.blog.controller.user.domain.User;
-import doit.blog.controller.user.dto.UserIdResponse;
-import doit.blog.controller.user.dto.UserInfoResponse;
-import doit.blog.controller.user.dto.UserLoginRequest;
-import doit.blog.controller.user.dto.UserSignUpRequest;
+import doit.blog.controller.user.dto.*;
 import doit.blog.exception.CustomErrorInfo;
 import doit.blog.exception.CustomException;
 import doit.blog.repository.UserRepository;
@@ -30,19 +27,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserIdResponse signUp(UserSignUpRequest userSignUpRequest){
-        validateDuplicateId(userSignUpRequest.userLoginId());
-        User user = User.create(userSignUpRequest,passwordEncoder);
+    @Transactional(readOnly = true)
+    public void validateIdOrPasswordFormat(String userLoginId,String userPassword) {
+        if(userLoginId.length() < 5 || userLoginId.length() > 30 || userPassword.length() < 5 || userPassword.length() > 30){
+            throw new CustomException(CustomErrorInfo.INVALID_ID_OR_PASSWORD_LENGTH);
+        }
+        String regex = "^[a-zA-Z0-9]+$";
+
+        if(!userLoginId.matches(regex) ){
+            throw new CustomException(CustomErrorInfo.INVALID_ID_FORMAT);
+        }
+        if(!userPassword.matches(regex)){
+            throw new CustomException(CustomErrorInfo.INVALID_PASSWORD_FORMAT);
+        }
+    }
+
+    @Override
+    public UserIdResponse signUp(UserSignUpRequest request){
+        validateDuplicateId(request.userLoginId());
+        validateIdOrPasswordFormat(request.userLoginId(),request.userPassword());
+        User user = User.create(request,passwordEncoder);
         userRepository.save(user);
+
         return UserIdResponse.from(user);
     }
 
     @Override
-    public UserIdResponse login(UserLoginRequest userLoginRequest){
-        User user = userRepository.findByUserLoginId(userLoginRequest.userLoginId());
-        if (user == null || !passwordEncoder.matches(userLoginRequest.userPassword(), user.getUserPassword())) {
+    @Transactional(readOnly = true)
+    public UserIdResponse login(UserLoginRequest request){
+        User user = userRepository.findByUserLoginId(request.userLoginId());
+        if (user == null || !passwordEncoder.matches(request.userPassword(), user.getUserPassword())) {
             throw new CustomException(CustomErrorInfo.INVALID_ID_OR_PASSWORD);
         }
+
         return UserIdResponse.from(user);
     }
 
@@ -51,6 +68,27 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponse getUserInfo(Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(CustomErrorInfo.USER_NOT_FOUND));
+
         return UserInfoResponse.from(user);
+    }
+
+    @Override
+    public UserIdResponse updateUserInfo(Long userId, UserInfoUpdateRequest request){
+        if (userId == null) {
+            throw new CustomException(CustomErrorInfo.SESSION_NOT_FOUND);
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(CustomErrorInfo.USER_NOT_FOUND));
+        user.UserInfoUpdate(request);
+
+        return UserIdResponse.from(user);
+    }
+
+    @Override
+    public void deleteUserInfo(Long userId){
+        userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(CustomErrorInfo.USER_NOT_FOUND));
+
+        userRepository.deleteById(userId);
     }
 }
