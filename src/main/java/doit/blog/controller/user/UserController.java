@@ -4,7 +4,6 @@ import doit.blog.controller.user.dto.*;
 import doit.blog.repository.UserRepository;
 import doit.blog.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +22,7 @@ public class UserController implements UserControllerDocs {
     }
 
     @PostMapping("/")
-    public UserIdResponse signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
+    public UserIdResponse signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
         return userService.signUp(userSignUpRequest);
     }
 
